@@ -16,7 +16,7 @@ class AppColors {
   // Light theme colors
   static const Color backgroundLight = Color(0xFFE0E4E2);      // Smooth stone
   static const Color backgroundExtraLight = Color(0xFFF2F5F3); // River foam
-  static const Color accentLight = Color(0xFFE0783D);          // Koi orange
+  static const Color accentLight = Color(0xFFD27A49);          // Balanced clay
   static const Color primaryTextLight = Color(0xFF363B39);     // Deep slate
   static const Color textSecondaryLight = Color(0xFF5B5F5D);   // River rock
   static const Color circleLight = Color(0xFF6E7975);          // River reed
@@ -25,7 +25,7 @@ class AppColors {
   // Dark theme colors
   static const Color backgroundDark = Color(0xFF151817);       // Night water
   static const Color backgroundExtraDark = Color(0xFF202322);  // Deep river
-  static const Color accentDark = Color(0xFFEF8A49);           // Autumn leaf
+  static const Color accentDark = Color(0xFFDE8C58);           // Warm amber
   static const Color primaryTextDark = Color(0xFFE2E6E4);      // Moon reflection
   static const Color textSecondaryDark = Color(0xFFB2B6B4);    // Morning mist
   static const Color circleDark = Color(0xFF535E5A);           // Moss stone
