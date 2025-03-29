@@ -14,7 +14,7 @@ import '../utils/theme.dart';
 enum BreathingState { inhale, inhaleHold, exhale, exhaleHold }
 
 class BreathingSessionScreen extends StatefulWidget {
-  const BreathingSessionScreen({Key? key}) : super(key: key);
+  const BreathingSessionScreen({super.key});
 
   @override
   State<BreathingSessionScreen> createState() => _BreathingSessionScreenState();
@@ -356,6 +356,9 @@ class _BreathingSessionScreenState extends State<BreathingSessionScreen>
   }
   
   void _showSessionSummary(Duration sessionDuration, AppState appState) {
+    final theme = Theme.of(context);
+    final accentColor = AppTheme.accent(context);
+    
     final double averageBreathDuration = _completedBreaths > 0 
         ? sessionDuration.inSeconds / _completedBreaths 
         : 0;
@@ -375,17 +378,17 @@ class _BreathingSessionScreenState extends State<BreathingSessionScreen>
         child: Container(
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: AppColors.backgroundLight,
+            color: theme.colorScheme.surface,
             borderRadius: BorderRadius.circular(20),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               // Session Complete Header
-              const Text(
+              Text(
                 'Session Complete',
                 style: TextStyle(
-                  color: AppColors.primaryTextLight,
+                  color: theme.colorScheme.onSurface,
                   fontSize: 24,
                   fontWeight: FontWeight.w600,
                 ),
@@ -395,16 +398,16 @@ class _BreathingSessionScreenState extends State<BreathingSessionScreen>
               
               Text(
                 dateFormatter.format(now),
-                style: const TextStyle(
-                  color: AppColors.textSecondaryLight,
+                style: TextStyle(
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                   fontSize: 16,
                 ),
               ),
               
               Text(
                 timeFormatter.format(now),
-                style: const TextStyle(
-                  color: AppColors.textSecondaryLight,
+                style: TextStyle(
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                   fontSize: 14,
                 ),
               ),
@@ -440,8 +443,8 @@ class _BreathingSessionScreenState extends State<BreathingSessionScreen>
               Text(
                 _getEncouragementMessage(),
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: AppColors.accentLight,
+                style: TextStyle(
+                  color: accentColor,
                   fontSize: 16,
                   fontStyle: FontStyle.italic,
                 ),
@@ -464,7 +467,7 @@ class _BreathingSessionScreenState extends State<BreathingSessionScreen>
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.accentLight,
+                    backgroundColor: accentColor,
                     foregroundColor: Colors.white,
                     elevation: 0,
                     padding: const EdgeInsets.symmetric(vertical: 14),
@@ -493,18 +496,21 @@ class _BreathingSessionScreenState extends State<BreathingSessionScreen>
     required String label,
     required String value,
   }) {
+    final theme = Theme.of(context);
+    final accentColor = AppTheme.accent(context);
+    
     return Row(
       children: [
         Container(
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-            color: AppColors.accentLight.withValues(alpha: 0.2),
+            color: accentColor.withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(
             icon,
-            color: AppColors.accentLight,
+            color: accentColor,
             size: 24,
           ),
         ),
@@ -514,15 +520,15 @@ class _BreathingSessionScreenState extends State<BreathingSessionScreen>
           children: [
             Text(
               label,
-              style: const TextStyle(
-                color: AppColors.textSecondaryLight,
+              style: TextStyle(
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                 fontSize: 14,
               ),
             ),
             Text(
               value,
-              style: const TextStyle(
-                color: AppColors.primaryTextLight,
+              style: TextStyle(
+                color: theme.colorScheme.onSurface,
                 fontSize: 18,
                 fontWeight: FontWeight.w500,
               ),
@@ -621,6 +627,8 @@ class _BreathingSessionScreenState extends State<BreathingSessionScreen>
   @override
   Widget build(BuildContext context) {
     final appState = Provider.of<AppState>(context);
+    final theme = Theme.of(context);
+    final accentColor = AppTheme.accent(context);
     
     return Scaffold(
       body: SafeArea(
@@ -632,7 +640,7 @@ class _BreathingSessionScreenState extends State<BreathingSessionScreen>
               // Session info
               Text(
                 appState.currentPreset.name,
-                style: Theme.of(context).textTheme.displaySmall,
+                style: theme.textTheme.displaySmall,
               ),
               
               const SizedBox(height: 20),
@@ -670,8 +678,8 @@ class _BreathingSessionScreenState extends State<BreathingSessionScreen>
                                       ? 'Exhale'
                                       : 'Hold',
                               key: ValueKey<String>(_currentState.toString()),
-                              style: const TextStyle(
-                                color: AppColors.primaryTextLight,
+                              style: TextStyle(
+                                color: theme.colorScheme.onSurface,
                                 fontSize: 30,
                                 fontWeight: FontWeight.w400,
                               ),
@@ -691,8 +699,8 @@ class _BreathingSessionScreenState extends State<BreathingSessionScreen>
                               shape: BoxShape.circle,
                               gradient: RadialGradient(
                                 colors: [
-                                  AppColors.accentLight.withValues(alpha: 0.1),
-                                  AppColors.accentLight.withValues(alpha: 0.0),
+                                  accentColor.withValues(alpha: 0.1),
+                                  accentColor.withValues(alpha: 0.0),
                                 ],
                                 stops: const [0.6, 1.0],
                               ),
@@ -709,7 +717,7 @@ class _BreathingSessionScreenState extends State<BreathingSessionScreen>
                             size: const Size(300, 300),
                             painter: _ParticlesPainter(
                               progress: _particleController.value,
-                              color: AppColors.accentLight,
+                              color: accentColor,
                               expansionRatio: _animation.value,
                             ),
                           );
@@ -727,9 +735,9 @@ class _BreathingSessionScreenState extends State<BreathingSessionScreen>
                               shape: BoxShape.circle,
                               gradient: RadialGradient(
                                 colors: [
-                                  AppColors.accentLight.withValues(alpha: 0.4),
-                                  AppColors.accentLight.withValues(alpha: 0.2),
-                                  AppColors.accentLight.withValues(alpha: 0.05),
+                                  accentColor.withValues(alpha: 0.4),
+                                  accentColor.withValues(alpha: 0.2),
+                                  accentColor.withValues(alpha: 0.05),
                                   Colors.transparent,
                                 ],
                                 stops: const [0.5, 0.75, 0.9, 1.0],
@@ -742,8 +750,8 @@ class _BreathingSessionScreenState extends State<BreathingSessionScreen>
                       // Countdown text
                       Text(
                         _phaseCountdown.toString(),
-                        style: const TextStyle(
-                          color: AppColors.primaryTextLight,
+                        style: TextStyle(
+                          color: theme.colorScheme.onSurface,
                           fontSize: 64,
                           fontWeight: FontWeight.w200,
                         ),
@@ -752,7 +760,6 @@ class _BreathingSessionScreenState extends State<BreathingSessionScreen>
                   ),
                 ),
               ),
-
               
               const SizedBox(height: 40),
               
@@ -760,12 +767,12 @@ class _BreathingSessionScreenState extends State<BreathingSessionScreen>
               if (appState.sessionMode == SessionMode.timer)
                 Text(
                   'Time: ${_formatTime(_secondsElapsed)} / ${_formatTime(appState.sessionDuration * 60)}',
-                  style: Theme.of(context).textTheme.bodyLarge,
+                  style: theme.textTheme.bodyLarge,
                 )
               else
                 Text(
                   'Breaths: $_completedBreaths / ${appState.breathCount}',
-                  style: Theme.of(context).textTheme.bodyLarge,
+                  style: theme.textTheme.bodyLarge,
                 ),
               
               const SizedBox(height: 40),
@@ -780,6 +787,10 @@ class _BreathingSessionScreenState extends State<BreathingSessionScreen>
                       _isPaused ? Icons.play_arrow : Icons.pause,
                     ),
                     label: Text(_isPaused ? 'Resume' : 'Pause'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.buttonBackground(context),
+                      foregroundColor: theme.colorScheme.onSurface,
+                    ),
                   ),
                   const SizedBox(width: 16),
                   ElevatedButton.icon(
@@ -811,6 +822,10 @@ class _BreathingSessionScreenState extends State<BreathingSessionScreen>
                     },
                     icon: const Icon(Icons.stop),
                     label: const Text('Stop'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.buttonBackground(context),
+                      foregroundColor: theme.colorScheme.onSurface,
+                    ),
                   ),
                 ],
               ),
@@ -865,7 +880,7 @@ class _ParticlesPainter extends CustomPainter {
       
       // Draw particle
       final paint = Paint()
-        ..color = color.withOpacity(opacity * (1.0 - adjustedProgress))
+        ..color = color.withValues(alpha: opacity * (1.0 - adjustedProgress))
         ..style = PaintingStyle.fill;
       
       canvas.drawCircle(Offset(x, y), particleSize, paint);

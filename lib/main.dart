@@ -33,7 +33,7 @@ void main() async {
 }
 
 class BreathingApp extends StatelessWidget {
-  const BreathingApp({Key? key}) : super(key: key);
+  const BreathingApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +51,7 @@ class BreathingApp extends StatelessWidget {
 }
 
 class AppNavigator extends StatefulWidget {
-  const AppNavigator({Key? key}) : super(key: key);
+  const AppNavigator({super.key});
 
   @override
   State<AppNavigator> createState() => _AppNavigatorState();
@@ -81,7 +81,7 @@ class _AppNavigatorState extends State<AppNavigator> {
         },
         backgroundColor: theme.colorScheme.surface,
         selectedItemColor: theme.colorScheme.primary,
-        unselectedItemColor: theme.colorScheme.onSurface.withOpacity(0.6),
+        unselectedItemColor: theme.colorScheme.onSurface.withValues(alpha: 0.6),
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home_rounded),

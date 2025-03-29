@@ -5,10 +5,9 @@ import 'package:intl/intl.dart';
 
 import '../models/app_state.dart';
 import '../utils/notification_service.dart';
-import '../utils/theme.dart';
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+  const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -149,7 +148,7 @@ class ProfileScreen extends StatelessWidget {
                     label: const Text('Change Reminder Time'),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Theme.of(context).colorScheme.onSurface,
-                      side: BorderSide(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)),
+                      side: BorderSide(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5)),
                     ),
                   ),
                 ],
@@ -211,7 +210,7 @@ class ProfileScreen extends StatelessWidget {
                               'Currently using: ${appState.isDarkMode ? 'Dark theme' : 'Light theme'}',
                               style: TextStyle(
                                 fontSize: 14,
-                                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                               ),
                             ),
                           ],
@@ -266,7 +265,7 @@ class ProfileScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
               shape: BoxShape.circle,
             ),
             child: Icon(
@@ -284,7 +283,7 @@ class ProfileScreen extends StatelessWidget {
                   title,
                   style: TextStyle(
                     fontSize: 14,
-                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -302,7 +301,7 @@ class ProfileScreen extends StatelessWidget {
                     subtitle,
                     style: TextStyle(
                       fontSize: 14,
-                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                     ),
                   ),
                 ],

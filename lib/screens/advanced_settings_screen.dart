@@ -5,7 +5,7 @@ import '../models/app_state.dart';
 import '../utils/theme.dart';
 
 class AdvancedSettingsScreen extends StatefulWidget {
-  const AdvancedSettingsScreen({Key? key}) : super(key: key);
+  const AdvancedSettingsScreen({super.key});
 
   @override
   State<AdvancedSettingsScreen> createState() => _AdvancedSettingsScreenState();
@@ -108,7 +108,7 @@ class _AdvancedSettingsScreenState extends State<AdvancedSettingsScreen> {
               Container(
                 padding: const EdgeInsets.all(16.0),
                 decoration: BoxDecoration(
-                  color: AppColors.accentLight.withOpacity(0.2),
+                  color: AppColors.accentLight.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Row(
@@ -141,7 +141,7 @@ class _AdvancedSettingsScreenState extends State<AdvancedSettingsScreen> {
               max: 10.0,
               divisions: 18,
               activeColor: AppColors.accentLight,
-              inactiveColor: AppColors.accentLight.withOpacity(0.3),
+              inactiveColor: AppColors.accentLight.withValues(alpha: 0.3),
               onChanged: (value) {
                 setState(() {
                   _inhaleSeconds = value;
@@ -164,7 +164,7 @@ class _AdvancedSettingsScreenState extends State<AdvancedSettingsScreen> {
               max: 10.0,
               divisions: 18,
               activeColor: AppColors.accentLight,
-              inactiveColor: AppColors.accentLight.withOpacity(0.3),
+              inactiveColor: AppColors.accentLight.withValues(alpha: 0.3),
               onChanged: (value) {
                 setState(() {
                   _exhaleSeconds = value;
@@ -187,7 +187,7 @@ class _AdvancedSettingsScreenState extends State<AdvancedSettingsScreen> {
               max: 10.0,
               divisions: 20,
               activeColor: AppColors.accentLight,
-              inactiveColor: AppColors.accentLight.withOpacity(0.3),
+              inactiveColor: AppColors.accentLight.withValues(alpha: 0.3),
               onChanged: (value) {
                 setState(() {
                   _holdSeconds = value;

@@ -6,10 +6,10 @@ class BreathCounter extends StatefulWidget {
   final ValueChanged<int> onChanged;
   
   const BreathCounter({
-    Key? key,
+    super.key,
     required this.initialCount,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   State<BreathCounter> createState() => _BreathCounterState();
@@ -36,7 +36,7 @@ class _BreathCounterState extends State<BreathCounter> {
           Text(
             'Number of Breaths',
             style: TextStyle(
-              color: theme.colorScheme.onBackground,
+              color: theme.colorScheme.onSurface,
               fontSize: 18,
               fontWeight: FontWeight.w500,
             ),
@@ -77,7 +77,7 @@ class _BreathCounterState extends State<BreathCounter> {
                   _count.toString(),
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: theme.colorScheme.onBackground,
+                    color: theme.colorScheme.onSurface,
                     fontSize: 48,
                     fontWeight: FontWeight.w300,
                   ),

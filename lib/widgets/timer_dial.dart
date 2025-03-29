@@ -7,10 +7,10 @@ class WheelTimerPicker extends StatefulWidget {
   final ValueChanged<int> onChanged;
   
   const WheelTimerPicker({
-    Key? key,
+    super.key,
     required this.initialMinutes,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   State<WheelTimerPicker> createState() => _WheelTimerPickerState();
@@ -48,7 +48,7 @@ class _WheelTimerPickerState extends State<WheelTimerPicker> {
           Text(
             'Set Duration',
             style: TextStyle(
-              color: theme.colorScheme.onBackground,
+              color: theme.colorScheme.onSurface,
               fontSize: 18,
               fontWeight: FontWeight.w500,
             ),
@@ -57,7 +57,7 @@ class _WheelTimerPickerState extends State<WheelTimerPicker> {
           Container(
             height: 200,
             decoration: BoxDecoration(
-              color: theme.colorScheme.surface.withOpacity(0.5),
+              color: AppTheme.buttonBackground(context).withValues(alpha: 0.5),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Stack(
@@ -69,7 +69,7 @@ class _WheelTimerPickerState extends State<WheelTimerPicker> {
                     height: 50,
                     width: 150,
                     decoration: BoxDecoration(
-                      color: AppTheme.accent(context).withOpacity(0.3),
+                      color: AppTheme.accent(context).withValues(alpha: 0.3),
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
@@ -97,8 +97,8 @@ class _WheelTimerPickerState extends State<WheelTimerPicker> {
                             '$minutes minutes',
                             style: TextStyle(
                               color: isSelected 
-                                  ? theme.colorScheme.onBackground
-                                  : theme.colorScheme.onBackground.withOpacity(0.7),
+                                  ? theme.colorScheme.onSurface
+                                  : theme.colorScheme.onSurface.withValues(alpha: 0.7),
                               fontSize: isSelected ? 22 : 18,
                               fontWeight: isSelected 
                                   ? FontWeight.w500 

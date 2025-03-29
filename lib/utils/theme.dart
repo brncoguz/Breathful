@@ -43,11 +43,9 @@ class AppTheme {
         primary: AppColors.accentLight,
         secondary: AppColors.accentLight,
         surface: AppColors.backgroundExtraLight,
-        background: AppColors.backgroundLight,
         onPrimary: Colors.white,
         onSecondary: Colors.white,
         onSurface: AppColors.primaryTextLight,
-        onBackground: AppColors.primaryTextLight,
       ),
       fontFamily: 'Roboto',
       textTheme: const TextTheme(
@@ -113,11 +111,9 @@ class AppTheme {
         primary: AppColors.accentDark,
         secondary: AppColors.accentDark,
         surface: AppColors.backgroundExtraDark,
-        background: AppColors.backgroundDark,
         onPrimary: Colors.black,
         onSecondary: Colors.black,
         onSurface: AppColors.primaryTextDark,
-        onBackground: AppColors.primaryTextDark,
       ),
       fontFamily: 'Roboto',
       textTheme: const TextTheme(

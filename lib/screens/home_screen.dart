@@ -10,7 +10,7 @@ import 'breathing_session_screen.dart';
 import 'advanced_settings_screen.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -36,11 +36,11 @@ class HomeScreen extends StatelessWidget {
                     }
                   },
                   child: Container(
-                    width: 200, // Match toggle width
-                    height: 36, // Match toggle height
+                    width: 200,
+                    height: 36,
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
-                      color: AppTheme.buttonBackground(context).withOpacity(0.5),
+                      color: AppTheme.buttonBackground(context).withValues(alpha: 0.5),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Stack(
@@ -50,7 +50,7 @@ class HomeScreen extends StatelessWidget {
                           child: Text(
                             appState.currentPreset.name,
                             style: TextStyle(
-                              color: theme.colorScheme.onBackground,
+                              color: theme.colorScheme.onSurface,
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
                             ),
@@ -64,7 +64,7 @@ class HomeScreen extends StatelessWidget {
                           child: Center(
                             child: Icon(
                               Icons.keyboard_arrow_right,
-                              color: theme.colorScheme.onBackground.withOpacity(0.5),
+                              color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
                               size: 16,
                             ),
                           ),
@@ -74,7 +74,6 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
               ),
-
               
               const SizedBox(height: 30),
               
@@ -84,7 +83,7 @@ class HomeScreen extends StatelessWidget {
                   height: 36,
                   width: 200,
                   decoration: BoxDecoration(
-                    color: AppTheme.buttonBackground(context).withOpacity(0.5),
+                    color: AppTheme.buttonBackground(context).withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Stack(
@@ -99,7 +98,7 @@ class HomeScreen extends StatelessWidget {
                         width: 100,
                         child: Container(
                           decoration: BoxDecoration(
-                            color: AppTheme.accent(context).withOpacity(0.3),
+                            color: AppTheme.accent(context).withValues(alpha: 0.3),
                             borderRadius: BorderRadius.circular(20),
                           ),
                         ),
@@ -165,8 +164,8 @@ class HomeScreen extends StatelessWidget {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppTheme.buttonBackground(context),
-                      foregroundColor: theme.colorScheme.onBackground,
+                      backgroundColor: theme.colorScheme.primary,
+                      foregroundColor: theme.colorScheme.onPrimary,
                       elevation: 0,
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
@@ -199,7 +198,7 @@ class HomeScreen extends StatelessWidget {
                     );
                   },
                   style: TextButton.styleFrom(
-                    foregroundColor: theme.colorScheme.onBackground.withOpacity(0.6),
+                    foregroundColor: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                     padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                   ),
                   child: const Text(
@@ -227,13 +226,14 @@ class HomeScreen extends StatelessWidget {
     return Expanded(
       child: GestureDetector(
         onTap: onTap,
+        behavior: HitTestBehavior.opaque,
         child: Center(
           child: Text(
             title,
             style: TextStyle(
               color: isSelected 
-                  ? Theme.of(context).colorScheme.onBackground 
-                  : Theme.of(context).colorScheme.onBackground.withOpacity(0.5),
+                  ? Theme.of(context).colorScheme.onSurface 
+                  : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
               fontSize: 14,
               fontWeight: isSelected ? FontWeight.w500 : FontWeight.w400,
             ),
@@ -243,13 +243,13 @@ class HomeScreen extends StatelessWidget {
     );
   }
   
-  // Preset picker - kept simple to match toggle aesthetic
+  // Minimal preset picker
   Future<BreathingPreset?> _showPresetPicker(BuildContext context, AppState appState) async {
     final theme = Theme.of(context);
     
     return showModalBottomSheet<BreathingPreset>(
       context: context,
-      backgroundColor: theme.colorScheme.surface.withOpacity(0.95),
+      backgroundColor: theme.colorScheme.surface.withValues(alpha: 0.95),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -264,7 +264,7 @@ class HomeScreen extends StatelessWidget {
                 height: 4,
                 margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.onSurface.withOpacity(0.2),
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
