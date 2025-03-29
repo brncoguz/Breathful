@@ -10,14 +10,14 @@ class AppState with ChangeNotifier {
   // Default presets
   final List<BreathingPreset> _defaultPresets = [
     BreathingPreset(
-      name: '5s · 5s',
+      name: '5-5',
       inhaleSeconds: 5,
       exhaleSeconds: 5,
       holdSeconds: 0,
       isDefault: true,
     ),
     BreathingPreset(
-      name: '4-7-8',
+      name: '4-7-8-7',
       inhaleSeconds: 4,
       exhaleSeconds: 8,
       holdSeconds: 7,
@@ -59,7 +59,7 @@ class AppState with ChangeNotifier {
   
   // Constructor initializes with default preset
   AppState() : _currentPreset = BreathingPreset(
-    name: '5s · 5s',
+    name: '5-5',
     inhaleSeconds: 5,
     exhaleSeconds: 5,
     holdSeconds: 0,

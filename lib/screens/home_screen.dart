@@ -243,7 +243,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
   
-  // Minimal preset picker
+  // Preset picker with swipe-to-delete functionality
   Future<BreathingPreset?> _showPresetPicker(BuildContext context, AppState appState) async {
     final theme = Theme.of(context);
     
@@ -275,34 +275,104 @@ class HomeScreen extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final preset = appState.allPresets[index];
                     final isSelected = preset.name == appState.currentPreset.name;
+                    final isDefaultPreset = preset.isDefault;
                     
-                    return InkWell(
-                      onTap: () {
-                        Navigator.pop(context, preset);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 12,
-                        ),
-                        child: Row(
-                          children: [
-                            Text(
-                              preset.name,
-                              style: TextStyle(
-                                color: theme.colorScheme.onSurface,
-                                fontSize: 16,
-                                fontWeight: isSelected ? FontWeight.w500 : FontWeight.w400,
-                              ),
+                    return Dismissible(
+                      // Use preset name as key
+                      key: Key(preset.name),
+                      // Only allow dismissal if it's not a default preset
+                      direction: isDefaultPreset 
+                          ? DismissDirection.none 
+                          : DismissDirection.endToStart,
+                      // Confirm before deleting
+                      confirmDismiss: (direction) async {
+                        if (isDefaultPreset) return false;
+                        
+                        // Don't allow deleting the current preset
+                        if (isSelected) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Can't delete the active preset"),
+                              duration: Duration(seconds: 2),
                             ),
-                            const Spacer(),
-                            if (isSelected)
-                              Icon(
-                                Icons.check,
-                                size: 18,
-                                color: AppTheme.accent(context),
+                          );
+                          return false;
+                        }
+                        
+                        // Show confirmation dialog
+                        return await showDialog<bool>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Delete Preset'),
+                            content: Text('Are you sure you want to delete "${preset.name}"?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, false),
+                                child: const Text('CANCEL'),
                               ),
-                          ],
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, true),
+                                child: const Text('DELETE'),
+                              ),
+                            ],
+                          ),
+                        ) ?? false;
+                      },
+                      // Handle the dismissal
+                      onDismissed: (direction) {
+                        // Remove preset using the existing method in AppState
+                        appState.deleteUserPreset(preset);
+                        
+                        // Show a snackbar
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Deleted "${preset.name}"'),
+                            duration: const Duration(seconds: 2),
+                          ),
+                        );
+                      },
+                      // The background that appears when swiping
+                      background: Container(
+                        color: Colors.transparent,
+                      ),
+                      // The secondary background (for end-to-start swipe)
+                      secondaryBackground: Container(
+                        color: Colors.red,
+                        alignment: Alignment.centerRight,
+                        padding: const EdgeInsets.only(right: 20),
+                        child: const Icon(
+                          Icons.delete,
+                          color: Colors.white,
+                        ),
+                      ),
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.pop(context, preset);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 12,
+                          ),
+                          child: Row(
+                            children: [
+                              Text(
+                                preset.name,
+                                style: TextStyle(
+                                  color: theme.colorScheme.onSurface,
+                                  fontSize: 16,
+                                  fontWeight: isSelected ? FontWeight.w500 : FontWeight.w400,
+                                ),
+                              ),
+                              const Spacer(),
+                              if (isSelected)
+                                Icon(
+                                  Icons.check,
+                                  size: 18,
+                                  color: AppTheme.accent(context),
+                                ),
+                            ],
+                          ),
                         ),
                       ),
                     );
