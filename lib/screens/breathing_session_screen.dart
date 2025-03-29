@@ -90,8 +90,8 @@ class _BreathingSessionScreenState extends State<BreathingSessionScreen>
       }
     });
     
-    // Create the circular animation
-    _animation = Tween<double>(begin: 0.5, end: 1.0).animate(
+    // Create the circular animation with balanced end value
+    _animation = Tween<double>(begin: 0.5, end: 1.3).animate(  // Modified to 1.3
       CurvedAnimation(
         parent: _animationController,
         curve: Curves.easeInOut,
@@ -152,7 +152,7 @@ class _BreathingSessionScreenState extends State<BreathingSessionScreen>
       case BreathingState.inhale:
         final inhaleDurationMs = (appState.currentPreset.inhaleSeconds * 1000).toInt();
         _animationController.duration = Duration(milliseconds: inhaleDurationMs);
-        _animation = Tween<double>(begin: 0.5, end: 1.0).animate(
+        _animation = Tween<double>(begin: 0.5, end: 1.3).animate(  // Modified to 1.3
           CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
         );
         _animationController.reset();
@@ -184,7 +184,7 @@ class _BreathingSessionScreenState extends State<BreathingSessionScreen>
       case BreathingState.exhale:
         final exhaleDurationMs = (appState.currentPreset.exhaleSeconds * 1000).toInt();
         _animationController.duration = Duration(milliseconds: exhaleDurationMs);
-        _animation = Tween<double>(begin: 1.0, end: 0.5).animate(
+        _animation = Tween<double>(begin: 1.3, end: 0.5).animate(  // Modified to 1.3
           CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
         );
         _animationController.reset();
@@ -498,12 +498,13 @@ class _BreathingSessionScreenState extends State<BreathingSessionScreen>
   }) {
     final theme = Theme.of(context);
     final accentColor = AppTheme.accent(context);
+    final screenWidth = MediaQuery.of(context).size.width;
     
     return Row(
       children: [
         Container(
-          width: 40,
-          height: 40,
+          width: screenWidth * 0.1,  // 10% of screen width
+          height: screenWidth * 0.1,  // 10% of screen width
           decoration: BoxDecoration(
             color: accentColor.withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(12),
@@ -511,10 +512,10 @@ class _BreathingSessionScreenState extends State<BreathingSessionScreen>
           child: Icon(
             icon,
             color: accentColor,
-            size: 24,
+            size: screenWidth * 0.06,  // 6% of screen width
           ),
         ),
-        const SizedBox(width: 16),
+        SizedBox(width: screenWidth * 0.04),  // 4% of screen width
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -522,14 +523,14 @@ class _BreathingSessionScreenState extends State<BreathingSessionScreen>
               label,
               style: TextStyle(
                 color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-                fontSize: 14,
+                fontSize: screenWidth * 0.035,  // 3.5% of screen width
               ),
             ),
             Text(
               value,
               style: TextStyle(
                 color: theme.colorScheme.onSurface,
-                fontSize: 18,
+                fontSize: screenWidth * 0.045,  // 4.5% of screen width
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -629,11 +630,20 @@ class _BreathingSessionScreenState extends State<BreathingSessionScreen>
     final appState = Provider.of<AppState>(context);
     final theme = Theme.of(context);
     final accentColor = AppTheme.accent(context);
+    final secondaryTextColor = theme.colorScheme.onSurface.withOpacity(0.6);
+    
+    // Get screen size for percentage calculations
+    final screenSize = MediaQuery.of(context).size;
+    final minScreenDimension = math.min(screenSize.width, screenSize.height);
+    
+    // Base size calculations for responsive UI - using 0.85 for a balanced size
+    final baseSize = minScreenDimension * 0.85; // 85% of the smaller dimension
+    final containerSize = baseSize * 1.2; // Fixed container size that's larger than the max animation size
     
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          padding: EdgeInsets.symmetric(horizontal: screenSize.width * 0.05),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -643,125 +653,125 @@ class _BreathingSessionScreenState extends State<BreathingSessionScreen>
                 style: theme.textTheme.displaySmall,
               ),
               
-              const SizedBox(height: 20),
+              SizedBox(height: baseSize * 0.03),
               
-              // Breathing animation with countdown and text above
+              // Breathing animation with fixed container
               Expanded(
                 child: Center(
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      // Phase text positioned above the circle with animation and gap
-                      Positioned(
-                        top: 20, // Changed from negative to positive value to ensure text is visible
-                        child: AnimatedOpacity(
-                          opacity: _textOpacityAnimation.value,
-                          duration: const Duration(milliseconds: 300),
-                          child: AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 400),
-                            transitionBuilder: (Widget child, Animation<double> animation) {
-                              return FadeTransition(
-                                opacity: animation,
-                                child: SlideTransition(
-                                  position: Tween<Offset>(
-                                    begin: const Offset(0.0, -0.2),
-                                    end: Offset.zero,
-                                  ).animate(animation),
-                                  child: child,
+                  child: Container(
+                    width: containerSize,
+                    height: containerSize,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // Animation container with fixed size
+                        Container(
+                          width: baseSize,
+                          height: baseSize,
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              // Background glow
+                              AnimatedBuilder(
+                                animation: _animationController,
+                                builder: (context, child) {
+                                  return Container(
+                                    width: baseSize * 0.7 * _animation.value,
+                                    height: baseSize * 0.7 * _animation.value,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      gradient: RadialGradient(
+                                        colors: [
+                                          accentColor.withValues(alpha: 0.1),
+                                          accentColor.withValues(alpha: 0.0),
+                                        ],
+                                        stops: const [0.6, 1.0],
+                                      ),
+                                    ),
+                                  );
+                                }
+                              ),
+                              
+                              // Floating particles
+                              AnimatedBuilder(
+                                animation: _particleController,
+                                builder: (context, child) {
+                                  return CustomPaint(
+                                    size: Size(baseSize * 0.75, baseSize * 0.75),
+                                    painter: _ParticlesPainter(
+                                      progress: _particleController.value,
+                                      color: accentColor,
+                                      expansionRatio: _animation.value,
+                                    ),
+                                  );
+                                }
+                              ),
+                              
+                              // Main animated cloud-like shape with no border
+                              AnimatedBuilder(
+                                animation: _animationController,
+                                builder: (context, child) {
+                                  return Container(
+                                    width: baseSize * 0.65 * _animation.value,  // Adjusted to 0.65
+                                    height: baseSize * 0.65 * _animation.value, // Adjusted to 0.65
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      gradient: RadialGradient(
+                                        colors: [
+                                          accentColor.withValues(alpha: 0.4),
+                                          accentColor.withValues(alpha: 0.2),
+                                          accentColor.withValues(alpha: 0.05),
+                                          Colors.transparent,
+                                        ],
+                                        stops: const [0.5, 0.75, 0.9, 1.0],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                              
+                              // Countdown text with secondary color
+                              Text(
+                                _phaseCountdown.toString(),
+                                style: TextStyle(
+                                  color: secondaryTextColor,
+                                  fontSize: minScreenDimension * 0.16, // Responsive font size
+                                  fontWeight: FontWeight.w200,
                                 ),
-                              );
-                            },
+                              ),
+                            ],
+                          ),
+                        ),
+                        
+                        // Added spacer between animation and text
+                        SizedBox(height: baseSize * 0.07),
+                        
+                        // Phase text in a fixed position below the animation
+                        Container(
+                          height: minScreenDimension * 0.08, // Fixed height container
+                          child: FadeTransition(
+                            opacity: _textOpacityAnimation,
                             child: Text(
                               _currentState == BreathingState.inhale
-                                  ? 'Inhale'
-                                  : _currentState == BreathingState.exhale
-                                      ? 'Exhale'
-                                      : 'Hold',
-                              key: ValueKey<String>(_currentState.toString()),
+                                ? 'Inhale'
+                                : _currentState == BreathingState.exhale
+                                    ? 'Exhale'
+                                    : 'Hold',
                               style: TextStyle(
-                                color: theme.colorScheme.onSurface,
-                                fontSize: 30,
+                                color: secondaryTextColor,
+                                fontSize: minScreenDimension * 0.07, // Responsive font size
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      
-                      // Background glow
-                      AnimatedBuilder(
-                        animation: _animationController,
-                        builder: (context, child) {
-                          return Container(
-                            width: 280 * _animation.value,
-                            height: 280 * _animation.value,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: RadialGradient(
-                                colors: [
-                                  accentColor.withValues(alpha: 0.1),
-                                  accentColor.withValues(alpha: 0.0),
-                                ],
-                                stops: const [0.6, 1.0],
-                              ),
-                            ),
-                          );
-                        }
-                      ),
-                      
-                      // Floating particles
-                      AnimatedBuilder(
-                        animation: _particleController,
-                        builder: (context, child) {
-                          return CustomPaint(
-                            size: const Size(300, 300),
-                            painter: _ParticlesPainter(
-                              progress: _particleController.value,
-                              color: accentColor,
-                              expansionRatio: _animation.value,
-                            ),
-                          );
-                        }
-                      ),
-                      
-                      // Main animated cloud-like shape with no border
-                      AnimatedBuilder(
-                        animation: _animationController,
-                        builder: (context, child) {
-                          return Container(
-                            width: 240 * _animation.value,
-                            height: 240 * _animation.value,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: RadialGradient(
-                                colors: [
-                                  accentColor.withValues(alpha: 0.4),
-                                  accentColor.withValues(alpha: 0.2),
-                                  accentColor.withValues(alpha: 0.05),
-                                  Colors.transparent,
-                                ],
-                                stops: const [0.5, 0.75, 0.9, 1.0],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                      
-                      // Countdown text
-                      Text(
-                        _phaseCountdown.toString(),
-                        style: TextStyle(
-                          color: theme.colorScheme.onSurface,
-                          fontSize: 64,
-                          fontWeight: FontWeight.w200,
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
               
-              const SizedBox(height: 40),
+              SizedBox(height: baseSize * 0.03),
               
               // Session progress
               if (appState.sessionMode == SessionMode.timer)
@@ -775,7 +785,7 @@ class _BreathingSessionScreenState extends State<BreathingSessionScreen>
                   style: theme.textTheme.bodyLarge,
                 ),
               
-              const SizedBox(height: 40),
+              SizedBox(height: baseSize * 0.06),
               
               // Control buttons
               Row(
@@ -792,7 +802,7 @@ class _BreathingSessionScreenState extends State<BreathingSessionScreen>
                       foregroundColor: theme.colorScheme.onSurface,
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  SizedBox(width: baseSize * 0.04),
                   ElevatedButton.icon(
                     onPressed: () {
                       showDialog(
@@ -830,7 +840,7 @@ class _BreathingSessionScreenState extends State<BreathingSessionScreen>
                 ],
               ),
               
-              const SizedBox(height: 40),
+              SizedBox(height: baseSize * 0.06),
             ],
           ),
         ),
@@ -856,15 +866,15 @@ class _ParticlesPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
     final random = math.Random(42); // Fixed seed for consistency
-    final baseSize = size.width * 0.4;
+    final baseSize = size.width; // This is now already percentage-based
     
     // Create particles
     for (int i = 0; i < particleCount; i++) {
       // Randomize particle properties
       final angle = random.nextDouble() * math.pi * 2;
-      final distance = random.nextDouble() * baseSize * 0.5 * (0.6 + expansionRatio * 0.4);
+      final distance = random.nextDouble() * baseSize * 0.2 * (0.6 + expansionRatio * 0.4);
       final speed = 0.3 + random.nextDouble() * 0.7;
-      final particleSize = 1.0 + random.nextDouble() * 4.0;
+      final particleSize = baseSize * 0.005 + random.nextDouble() * baseSize * 0.01;
       final opacity = 0.1 + random.nextDouble() * 0.3;
       
       // Calculate particle position based on time
