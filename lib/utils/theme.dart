@@ -14,22 +14,22 @@ extension ColorWithValues on Color {
 
 class AppColors {
   // Light theme colors
-  static const Color backgroundLight = Color.fromARGB(255, 217, 212, 195);
-  static const Color backgroundExtraLight = Color.fromARGB(255, 238, 237, 233);
-  static const Color accentLight = Color(0xFFD4956A);
-  static const Color primaryTextLight = Color(0xFF464C3B);
-  static const Color textSecondaryLight = Color(0xFF5A6353);
-  static const Color circleLight = Color(0xFF5F6B51);
-  static const Color buttonBackgroundLight = Color(0xFFE8E3CE);
+  static const Color backgroundLight = Color(0xFFE0E4E2);      // Smooth stone
+  static const Color backgroundExtraLight = Color(0xFFF2F5F3); // River foam
+  static const Color accentLight = Color(0xFFE0783D);          // Koi orange
+  static const Color primaryTextLight = Color(0xFF363B39);     // Deep slate
+  static const Color textSecondaryLight = Color(0xFF5B5F5D);   // River rock
+  static const Color circleLight = Color(0xFF6E7975);          // River reed
+  static const Color buttonBackgroundLight = Color(0xFFD4D9D6); // Pebble
 
   // Dark theme colors
-  static const Color backgroundDark = Color(0xFF1E2119);
-  static const Color backgroundExtraDark = Color(0xFF282E24);
-  static const Color accentDark = Color(0xFFE2A87A); // Lighter for better visibility
-  static const Color primaryTextDark = Color(0xFFE5E1D0);
-  static const Color textSecondaryDark = Color(0xFFBBB8A9);
-  static const Color circleDark = Color(0xFF758064);
-  static const Color buttonBackgroundDark = Color(0xFF3C4434);
+  static const Color backgroundDark = Color(0xFF151817);       // Night water
+  static const Color backgroundExtraDark = Color(0xFF202322);  // Deep river
+  static const Color accentDark = Color(0xFFEF8A49);           // Autumn leaf
+  static const Color primaryTextDark = Color(0xFFE2E6E4);      // Moon reflection
+  static const Color textSecondaryDark = Color(0xFFB2B6B4);    // Morning mist
+  static const Color circleDark = Color(0xFF535E5A);           // Moss stone
+  static const Color buttonBackgroundDark = Color(0xFF2A2D2B); // Riverbed
 }
 
 class AppTheme {

@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 
 import '../models/app_state.dart';
 import '../utils/notification_service.dart';
+import '../utils/theme.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -155,70 +156,8 @@ class ProfileScreen extends StatelessWidget {
                 
                 const SizedBox(height: 40),
                 
-                // Theme settings
-                Text(
-                  'Appearance',
-                  style: Theme.of(context).textTheme.displaySmall,
-                ),
-                
-                const SizedBox(height: 16),
-                
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Column(
-                    children: [
-                      SwitchListTile(
-                        title: const Text('Use System Theme'),
-                        subtitle: const Text('Automatically match device settings'),
-                        value: appState.followSystemTheme,
-                        activeColor: Theme.of(context).colorScheme.primary,
-                        contentPadding: EdgeInsets.zero,
-                        onChanged: (value) {
-                          appState.setFollowSystemTheme(value);
-                        },
-                      ),
-                      
-                      if (!appState.followSystemTheme) ...[
-                        const Divider(),
-                        SwitchListTile(
-                          title: const Text('Dark Mode'),
-                          subtitle: Text(appState.isDarkMode ? 'On' : 'Off'),
-                          value: appState.isDarkMode,
-                          activeColor: Theme.of(context).colorScheme.primary,
-                          contentPadding: EdgeInsets.zero,
-                          onChanged: (value) {
-                            appState.setDarkMode(value);
-                          },
-                        ),
-                      ],
-                      
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Row(
-                          children: [
-                            Icon(
-                              appState.isDarkMode ? Icons.dark_mode : Icons.light_mode,
-                              size: 16,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              'Currently using: ${appState.isDarkMode ? 'Dark theme' : 'Light theme'}',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                // Theme settings - replaced with new ThemeModeSelector
+                ThemeModeSelector(),
                 
                 // Achievement message
                 if (appState.totalSessions > 0)
@@ -323,5 +262,247 @@ class ProfileScreen extends StatelessWidget {
     } else {
       return 'You\'ve taken your first steps to mindful breathing. Well done!';
     }
+  }
+}
+
+// Theme Mode Selector Component
+class ThemeModeSelector extends StatelessWidget {
+  const ThemeModeSelector({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final appState = Provider.of<AppState>(context);
+    final theme = Theme.of(context);
+    
+    // Get the current selected mode index
+    int selectedIndex = appState.followSystemTheme 
+        ? 2 
+        : (appState.isDarkMode ? 1 : 0);
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Appearance',
+          style: theme.textTheme.displaySmall,
+        ),
+        
+        const SizedBox(height: 16),
+        
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surface,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Theme Selection Control
+              Container(
+                height: 90,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.1),
+                    width: 1,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    _buildThemeOption(
+                      context: context,
+                      index: 0,
+                      selectedIndex: selectedIndex,
+                      label: 'Light',
+                      icon: Icons.light_mode,
+                      isFirstItem: true,
+                      onTap: () {
+                        appState.setFollowSystemTheme(false);
+                        appState.setDarkMode(false);
+                      },
+                    ),
+                    _buildThemeOption(
+                      context: context,
+                      index: 1,
+                      selectedIndex: selectedIndex,
+                      label: 'Dark',
+                      icon: Icons.dark_mode,
+                      onTap: () {
+                        appState.setFollowSystemTheme(false);
+                        appState.setDarkMode(true);
+                      },
+                    ),
+                    _buildThemeOption(
+                      context: context,
+                      index: 2,
+                      selectedIndex: selectedIndex,
+                      label: 'Auto',
+                      icon: Icons.brightness_auto,
+                      isLastItem: true,
+                      onTap: () {
+                        appState.setFollowSystemTheme(true);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              
+              // Current theme indicator
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: Row(
+                  children: [
+                    Icon(
+                      _getCurrentThemeIcon(appState),
+                      size: 16,
+                      color: theme.colorScheme.primary,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      _getCurrentThemeText(appState),
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+  
+  IconData _getCurrentThemeIcon(AppState appState) {
+    if (appState.followSystemTheme) {
+      return Icons.brightness_auto;
+    }
+    return appState.isDarkMode ? Icons.dark_mode : Icons.light_mode;
+  }
+  
+  String _getCurrentThemeText(AppState appState) {
+    if (appState.followSystemTheme) {
+      return 'Currently using: System theme (${appState.isDarkMode ? 'Dark' : 'Light'})';
+    }
+    return 'Currently using: ${appState.isDarkMode ? 'Dark' : 'Light'} theme';
+  }
+  
+  Widget _buildThemeOption({
+    required BuildContext context,
+    required int index,
+    required int selectedIndex,
+    required String label,
+    required IconData icon,
+    required VoidCallback onTap,
+    bool isFirstItem = false,
+    bool isLastItem = false,
+  }) {
+    final theme = Theme.of(context);
+    final isSelected = index == selectedIndex;
+    
+    // Border radius for the theme option containers
+    BorderRadius borderRadius = BorderRadius.only(
+      topLeft: Radius.circular(isFirstItem ? 12 : 0),
+      bottomLeft: Radius.circular(isFirstItem ? 12 : 0),
+      topRight: Radius.circular(isLastItem ? 12 : 0),
+      bottomRight: Radius.circular(isLastItem ? 12 : 0),
+    );
+    
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          decoration: BoxDecoration(
+            color: isSelected 
+                ? theme.colorScheme.primary.withValues(alpha: 0.2)
+                : Colors.transparent,
+            borderRadius: borderRadius,
+            border: Border.all(
+              color: isSelected 
+                  ? theme.colorScheme.primary
+                  : Colors.transparent,
+              width: 1.5,
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Theme preview thumbnail
+              Container(
+                height: 35,
+                width: 55,
+                margin: const EdgeInsets.only(bottom: 8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(6),
+                  color: index == 0 
+                      ? AppColors.backgroundLight
+                      : AppColors.backgroundDark,
+                  border: Border.all(
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.1),
+                    width: 1,
+                  ),
+                ),
+                child: index == 2 
+                    ? Row(
+                        children: [
+                          Expanded(
+                            flex: 1,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: AppColors.backgroundLight,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(5),
+                                  bottomLeft: Radius.circular(5),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: AppColors.backgroundDark,
+                                borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(5),
+                                  bottomRight: Radius.circular(5),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    : Center(
+                        child: Container(
+                          height: 12,
+                          width: 30,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(6),
+                            color: index == 0 
+                                ? AppColors.accentLight
+                                : AppColors.accentDark,
+                          ),
+                        ),
+                      ),
+              ),
+              
+              // Label
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                  color: isSelected 
+                      ? theme.colorScheme.primary
+                      : theme.colorScheme.onSurface,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
