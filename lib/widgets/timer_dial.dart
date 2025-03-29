@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // Import for haptic feedback
 import '../utils/theme.dart';
 
 class WheelTimerPicker extends StatefulWidget {
@@ -21,9 +22,18 @@ class _WheelTimerPickerState extends State<WheelTimerPicker> {
   final int _maxMinutes = 60;
   final int _minMinutes = 1;
   
+  // Track the currently selected value
+  late int _selectedMinutes;
+  // Track the previous value to know when it changes
+  late int _previousMinutes;
+  
   @override
   void initState() {
     super.initState();
+    // Set the initial selected minutes
+    _selectedMinutes = widget.initialMinutes;
+    _previousMinutes = widget.initialMinutes;
+    
     // Initialize the scroll controller to show the initial value
     _scrollController = FixedExtentScrollController(
       initialItem: widget.initialMinutes - _minMinutes,
@@ -78,35 +88,60 @@ class _WheelTimerPickerState extends State<WheelTimerPicker> {
                 // Wheel picker
                 SizedBox(
                   width: 150,
-                  child: CupertinoPicker(
-                    scrollController: _scrollController,
-                    itemExtent: 50,
-                    backgroundColor: Colors.transparent,
-                    onSelectedItemChanged: (index) {
-                      final minutes = index + _minMinutes;
-                      widget.onChanged(minutes);
-                    },
-                    children: List<Widget>.generate(
-                      _maxMinutes - _minMinutes + 1,
-                      (index) {
-                        final minutes = index + _minMinutes;
-                        final isSelected = minutes == widget.initialMinutes;
+                  child: NotificationListener<ScrollNotification>(
+                    // Listen for scroll updates to provide haptic feedback
+                    onNotification: (notification) {
+                      if (notification is ScrollUpdateNotification) {
+                        // Get the current position to determine the current value
+                        final currentItem = (_scrollController.position.pixels / 50).round();
+                        final currentMinutes = currentItem + _minMinutes;
                         
-                        return Center(
-                          child: Text(
-                            '$minutes minutes',
-                            style: TextStyle(
-                              color: isSelected 
-                                  ? theme.colorScheme.onSurface
-                                  : theme.colorScheme.onSurface.withValues(alpha: 0.7),
-                              fontSize: isSelected ? 22 : 18,
-                              fontWeight: isSelected 
-                                  ? FontWeight.w500 
-                                  : FontWeight.w400,
-                            ),
-                          ),
-                        );
+                        // Only provide feedback when crossing a minute boundary
+                        if (currentMinutes != _previousMinutes && 
+                            currentMinutes >= _minMinutes && 
+                            currentMinutes <= _maxMinutes) {
+                          // Use the lightest haptic feedback for subtlety
+                          HapticFeedback.selectionClick();
+                          _previousMinutes = currentMinutes;
+                        }
+                      }
+                      return false;
+                    },
+                    child: CupertinoPicker(
+                      scrollController: _scrollController,
+                      itemExtent: 50,
+                      backgroundColor: Colors.transparent,
+                      onSelectedItemChanged: (index) {
+                        final minutes = index + _minMinutes;
+                        // Update the selected minutes in state
+                        setState(() {
+                          _selectedMinutes = minutes;
+                        });
+                        widget.onChanged(minutes);
                       },
+                      children: List<Widget>.generate(
+                        _maxMinutes - _minMinutes + 1,
+                        (index) {
+                          final minutes = index + _minMinutes;
+                          // Compare against _selectedMinutes
+                          final isSelected = minutes == _selectedMinutes;
+                          
+                          return Center(
+                            child: Text(
+                              minutes == 1 ? '$minutes minute' : '$minutes minutes', // Proper plural handling
+                              style: TextStyle(
+                                color: isSelected 
+                                    ? theme.colorScheme.onSurface
+                                    : theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                                fontSize: isSelected ? 22 : 18,
+                                fontWeight: isSelected 
+                                    ? FontWeight.w500 
+                                    : FontWeight.w400,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ),
